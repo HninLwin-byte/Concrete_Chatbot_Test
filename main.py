@@ -107,9 +107,9 @@ def download_pdf(url):
 # Function to load data and create the index
 @st.cache(show_spinner=False)
 def load_data():
-    pdf_path = download_pdf("https://github.com/HninLwin-byte/Concrete_Chatbot_Test/blob/master/Sustainable_Concrete_Technology.pdf?raw=true")
+    # pdf_path = download_pdf("https://github.com/HninLwin-byte/Concrete_Chatbot_Test/blob/master/Sustainable_Concrete_Technology.pdf?raw=true")
     with st.spinner(text="Loading and indexing the documents..."):
-        reader = SimpleDirectoryReader(input_dir=pdf_path)
+        reader = SimpleDirectoryReader(input_dir="./.dev_container, recursive=True)
         docs = reader.load_data()
         embed_model = GeminiEmbedding(model_name="models/embedding-001", title="This is a document")
         llm = Gemini(model="models/gemini-pro")
