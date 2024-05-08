@@ -98,7 +98,7 @@ if "messages" not in st.session_state.keys():
 @st.cache_resource(show_spinner=False)
 def load_data():
     with st.spinner(text="Loading and indexing the documents..."):
-        reader = SimpleDirectoryReader(input_dir="/Users/krislwin/Documents/LLM_Concrete/data", recursive=True)
+        reader = SimpleDirectoryReader(input_dir=["Sustainable_Concrete_Technology.pdf"])
         docs = reader.load_data()
         embed_model = GeminiEmbedding(
             model_name="models/embedding-001", title="This is a document"
