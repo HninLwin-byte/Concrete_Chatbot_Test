@@ -96,18 +96,25 @@ if "messages" not in st.session_state.keys():
 
 # Function to load data and create the index
 @st.cache_resource(show_spinner=False)
+def download_pdf(url):
+    with st.spinner("Downloading PDF file..."):
+        response = requests.get(url)
+        with open("Sustainable_Concrete_Technology.pdf", "wb") as f:
+            f.write(response.content)
+    return "Sustainable_Concrete_Technology.pdf"
+
+# Function to load data and create the index
+@st.cache(show_spinner=False)
 def load_data():
+    pdf_path = download_pdf("https://github.com/HninLwin-byte/Concrete_Chatbot_Test/blob/master/Sustainable_Concrete_Technology.pdf?raw=true")
     with st.spinner(text="Loading and indexing the documents..."):
-        reader = SimpleDirectoryReader(input_dir="https://github.com/HninLwin-byte/Concrete_Chatbot_Test/blob/master/Sustainable_Concrete_Technology.pdf")
+        reader = SimpleDirectoryReader(input_dir=pdf_path)
         docs = reader.load_data()
         embed_model = GeminiEmbedding(model_name="models/embedding-001", title="This is a document")
         llm = Gemini(model="models/gemini-pro")
         service_context = ServiceContext.from_defaults(llm=llm, embed_model=embed_model)
         index = VectorStoreIndex.from_documents(docs, service_context=service_context)
         return index
-
-# Load the index
-index = load_data()
 
 # Initialize the chat engine
 if "chat_engine" not in st.session_state.keys():
