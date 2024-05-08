@@ -1,4 +1,5 @@
 import streamlit as st
+import requests
 import openai
 from llama_index.llms.openai import OpenAI
 from llama_index.llms.gemini import Gemini
