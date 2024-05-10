@@ -15,20 +15,39 @@ import google.generativeai as genai
 import dotenv,os
 dotenv.load_dotenv()
 
+
 st.set_page_config(page_title="UjjwalDeepXIXC", page_icon=r"scg_logo.jpg", layout="centered", initial_sidebar_state="auto", menu_items=None)
-st.header(":violet[SCG & KMUTT Chat]Bot",divider='rainbow', help = "This bot is designed by Ujjwal Deep to address all of your questions hehe")
-# st.subheader("Hello! There, How can I help you Today- :)")
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #e6f7ff;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-
-col1, col2 = st.columns([1, 3])
+col1, col2 = st.columns([5, 1])
 
 # Display the logo in the first column
 with col1:
-    st.image('scg_logo.jpg', width=100)
+    st.image('scg_logo.jpg', width=120)
+    
+    
+    st.header(":violet[SCG & KMUTT Chat]Bot",divider='rainbow', help = "This bot is designed by Ujjwal Deep to address all of your questions hehe")
 
-# Display the text in the second column
-with col2:
-    st.subheader("Hello! There, How can I help you Today-  :)")
+
+
+# col1, col2 = st.columns([1, 3])
+
+# # Display the logo in the first column
+# with col1:
+#     st.image('scg_logo.jpg', width=100)
+
+# # Display the text in the second column
+# with col2:
+st.subheader("Hello! There, How can I help you Today-  :)")
    
 
 st.caption(":violet[what a] :orange[good day] :violet[to share what SCG is offering right now!]")
@@ -96,7 +115,3 @@ if st.session_state.messages[-1]["role"] != "assistant":
             st.write(response.response)
             message = {"role": "assistant", "content": response.response}
             st.session_state.messages.append(message) # Add response to message history
-
-
-
-
