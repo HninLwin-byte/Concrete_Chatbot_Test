@@ -39,8 +39,8 @@ st.caption(":violet[what a] :orange[good day] :violet[to share what SCG is offer
 
 
 # add sidebar filters
-st.sidebar.slider("Slider", 0, 100, 50)
-st.sidebar.date_input("Date Input")
+# st.sidebar.slider("Slider", 0, 100, 50)
+# st.sidebar.date_input("Date Input")
 # openai.api_key = st.secrets.openai_key
 GOOGLE_API_KEY=os.environ.get('GOOGLE_API_KEY')
 genai.configure(api_key=GOOGLE_API_KEY)
