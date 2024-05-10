@@ -81,7 +81,7 @@ if prompt := st.chat_input("Your question"): # Prompt for user input and save to
 for message in st.session_state.messages:
     with st.container():
         if message["role"] == "assistant":
-            st.image('chatbot_icon.png', width=30)
+            st.image('scg_logo.jpg', width=30)
             st.write("ChatBot:", message["content"])
         else:
             st.write("You:", message["content"])
