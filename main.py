@@ -18,6 +18,9 @@ dotenv.load_dotenv()
 st.set_page_config(page_title="UjjwalDeepXIXC", page_icon=r"scg_logo.jpg", layout="centered", initial_sidebar_state="auto", menu_items=None)
 st.header(":violet[SCG & KMUTT Chat]Bot",divider='rainbow', help = "This bot is designed by Ujjwal Deep to address all of your questions hehe")
 # st.subheader("Hello! There, How can I help you Today- :)")
+
+st.sidebar.image('scg_logo.jpg', width=60)
+st.sidebar.subheader("SCG")
 col1, col2 = st.columns([1, 4])
 
 # Display the logo in the first column
