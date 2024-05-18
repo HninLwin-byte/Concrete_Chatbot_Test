@@ -64,7 +64,9 @@ st.caption(":violet[what a] :orange[good day] :violet[to share what SCG is offer
 # st.sidebar.date_input("Date Input")
 # openai.api_key = st.secrets.openai_key
 GOOGLE_API_KEY=os.environ.get('GOOGLE_API_KEY')
+openai_key=os.environ.get('OPENAI_SECRET_KEY')
 genai.configure(api_key=GOOGLE_API_KEY)
+openai.api_key = st.secrets.openai_key
 
 
 if "messages" not in st.session_state.keys(): # Initialize the chat messages history
@@ -84,7 +86,8 @@ def load_data():
             model_name="models/embedding-001", title="this is a document"
             )
         # service_context = ServiceContext.from_defaults(llm = Gemini(model="models/gemini-pro"), embed_model=embed_model,)
-        service_context = ServiceContext.from_defaults(llm=Gemini(model="models/gemini-pro"), embed_model=embed_model)
+        service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo", temperature=0.5, system_prompt="You are an expert on the Streamlit Python library and your job is to answer technical questions. Assume that all questions are related to the Streamlit Python library. Keep your answers technical and based on facts – do not hallucinate features."))
+        #service_context = ServiceContext.from_defaults(llm=Gemini(model="models/gemini-pro"), embed_model=embed_model)
 
         
 
