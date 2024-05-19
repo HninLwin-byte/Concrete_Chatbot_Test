@@ -175,8 +175,7 @@ def load_data():
         # Initialize the embedding model
         embed_model = GeminiEmbedding(model_name="models/embedding-001", title="this is a document")
         
-        # Initialize the generative model
-        llm = genai.GenerativeModel(model="gemini-pro")
+        
         
         # Initialize the service context
         service_context = ServiceContext.from_defaults(llm=Gemini(model="models/gemini-pro"), embed_model=embed_model)
