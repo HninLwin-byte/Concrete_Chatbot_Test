@@ -179,7 +179,7 @@ def load_data():
         llm = genai.GenerativeModel(model="gemini-pro")
         
         # Initialize the service context
-        service_context = ServiceContext.from_defaults(llm=llm, embed_model=embed_model)
+        service_context = ServiceContext.from_defaults(llm=Gemini(model="models/gemini-pro), embed_model=embed_model)
         
         index = VectorStoreIndex.from_documents(docs, service_context=service_context)
         return index
