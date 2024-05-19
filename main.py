@@ -85,8 +85,8 @@ def load_data():
         embed_model = GeminiEmbedding(
             model_name="models/embedding-001", title="this is a document"
             )
-        model = genai.GenerativeModel('gemini-pro')
-        service_context = ServiceContext.from_defaults(llm = model, embed_model=embed_model,)
+        
+        service_context = ServiceContext.from_defaults(llm = Gemini(models/gemini-pro), embed_model=embed_model,)
         #service_context = ServiceContext.from_defaults(llm=OpenAI(model="gpt-3.5-turbo", temperature=0.5, system_prompt="You are an expert on the Streamlit Python library and your job is to answer technical questions. Assume that all questions are related to the Streamlit Python library. Keep your answers technical and based on facts – do not hallucinate features."))
         #service_context = ServiceContext.from_defaults(embed_model=embed_model, llm=None)
         
