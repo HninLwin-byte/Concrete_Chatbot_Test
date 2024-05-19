@@ -66,7 +66,7 @@ st.caption(":violet[what a] :orange[good day] :violet[to share what SCG is offer
 GOOGLE_API_KEY=os.environ.get('GOOGLE_API_KEY')
 
 genai.configure(api_key=GOOGLE_API_KEY)
-openai.api_key = st.secrets.openai_key
+# openai.api_key = st.secrets.openai_key
 
 
 if "messages" not in st.session_state.keys(): # Initialize the chat messages history
