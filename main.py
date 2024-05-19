@@ -125,10 +125,11 @@
 
 import os
 import streamlit as st
-from PyPDF2 import PdfReader
+from PIL import Image
+import numpy as np
 from llama_index.llms.gemini import Gemini
 from llama_index.embeddings.gemini import GeminiEmbedding
-from llama_index.core import VectorStoreIndex, ServiceContext, Document, SimpleDirectoryReader
+from llama_index.core import VectorStoreIndex, ServiceContext, SimpleDirectoryReader
 from streamlit_extras.app_logo import add_logo
 import google.generativeai as genai
 from dotenv import load_dotenv
@@ -175,8 +176,8 @@ def load_data():
         # Initialize the embedding model
         embed_model = GeminiEmbedding(model_name="models/embedding-001", title="this is a document")
         
-        
-        
+        # Initialize the generative model
+       
         # Initialize the service context
         service_context = ServiceContext.from_defaults(llm=Gemini(model="models/gemini-pro"), embed_model=embed_model)
         
@@ -194,8 +195,22 @@ uploaded_file = st.file_uploader("Upload a photo", type=["jpg", "jpeg", "png"])
 
 if uploaded_file is not None:
     # Process the uploaded file
-    st.image(uploaded_file, caption="Uploaded Image", use_column_width=True)
-    # Here, you can add code to handle the uploaded image (e.g., send it to a model for processing)
+    image = Image.open(uploaded_file)
+    st.image(image, caption="Uploaded Image", use_column_width=True)
+    
+    # Convert image to numpy array
+    image_array = np.array(image)
+    
+    # Optionally, preprocess the image if needed (resize, normalize, etc.)
+    # For example, you might resize the image:
+    # image_array = np.array(image.resize((224, 224)))  # Example size
+    
+    # Send the image data to the model
+    # Assuming the model can process numpy arrays
+    response = genai.process_image(image_array)  # Placeholder for the actual model processing method
+    
+    # Display the model's response
+    st.write("Model Response:", response)
 
 # Prompt for user input and save to chat history
 if prompt := st.chat_input("Your question"):
@@ -214,5 +229,3 @@ if st.session_state.messages[-1]["role"] != "assistant":
             st.write(response.response)
             message = {"role": "assistant", "content": response.response}
             st.session_state.messages.append(message)  # Add response to message history
-
-
