@@ -64,7 +64,7 @@ st.caption(":violet[what a] :orange[good day] :violet[to share what SCG is offer
 # st.sidebar.date_input("Date Input")
 # openai.api_key = st.secrets.openai_key
 GOOGLE_API_KEY=os.environ.get('GOOGLE_API_KEY')
-openai_key=os.environ.get('OPENAI_SECRET_KEY')
+
 genai.configure(api_key=GOOGLE_API_KEY)
 openai.api_key = st.secrets.openai_key
 
