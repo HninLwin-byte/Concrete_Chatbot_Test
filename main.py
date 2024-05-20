@@ -53,8 +53,8 @@ with col2:
     st.caption(":violet[what a] :orange[good day] :violet[to share what SCG is offering right now!]")
     
     
-    st.set_page_config(page_title="Chat with the Streamlit docs, powered by LlamaIndex", page_icon="🦙", layout="centered", initial_sidebar_state="auto", menu_items=None)
-    st.title("KMUTT & SCG Chatbot")
+    # st.set_page_config(page_title="Chat with the Streamlit docs, powered by LlamaIndex", page_icon="🦙", layout="centered", initial_sidebar_state="auto", menu_items=None)
+    # st.title("KMUTT & SCG Chatbot")
 
 
 
