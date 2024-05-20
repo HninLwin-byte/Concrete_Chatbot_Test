@@ -46,7 +46,7 @@ with col1:
 #     st.image('scg_logo.jpg', width=100)
 
 # # # Display the text in the second column
-with col2:
+
     st.subheader("Hello! There, How can I help you Today-  :)")
        
     
