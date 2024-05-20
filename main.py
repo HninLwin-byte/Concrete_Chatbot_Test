@@ -123,23 +123,36 @@
 #             message = {"role": "assistant", "content": response.response}
 #             st.session_state.messages.append(message) # Add response to message history
 
-import os
 import streamlit as st
-from PIL import Image
-import numpy as np
+import openai
+from llama_index.llms.openai import OpenAI
 from llama_index.llms.gemini import Gemini
 from llama_index.embeddings.gemini import GeminiEmbedding
-from llama_index.core import VectorStoreIndex, ServiceContext, SimpleDirectoryReader
+from llama_index.core import (
+    VectorStoreIndex, 
+    ServiceContext, 
+    Document, 
+    SimpleDirectoryReader
+)
 from streamlit_extras.app_logo import add_logo
 import google.generativeai as genai
-from dotenv import load_dotenv
+from llama_index.llms.huggingface import HuggingFaceLLM
+import torch
+import dotenv
+import os
+from llama_index.core import Settings
+from llama_index.core import PromptTemplate
 
-# Load environment variables
-load_dotenv()
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-genai.configure(api_key=GOOGLE_API_KEY)
+dotenv.load_dotenv()
 
-st.set_page_config(page_title="UjjwalDeepXIXC", page_icon="scg_logo.jpg", layout="centered", initial_sidebar_state="auto")
+st.set_page_config(
+    page_title="SCG&KMUTT chatbot", 
+    page_icon=r"scg_logo.jpg", 
+    layout="centered", 
+    initial_sidebar_state="auto", 
+    menu_items=None
+)
+
 st.markdown(
     """
     <style>
@@ -153,7 +166,6 @@ st.markdown(
 
 col1, col2 = st.columns([5, 1])
 
-# Display the logo in the first column
 with col1:
     st.image('scg_logo.jpg', width=120)
     st.header(":violet[SCG & KMUTT Chat]Bot", divider='rainbow', help="This bot is designed by Ujjwal Deep to address all of your questions hehe")
@@ -161,7 +173,9 @@ with col1:
 st.subheader("Hello! There, How can I help you Today-  :)")
 st.caption(":violet[what a] :orange[good day] :violet[to share what SCG is offering right now!]")
 
-# Initialize chat messages history
+GOOGLE_API_KEY = os.environ.get('GOOGLE_API_KEY')
+genai.configure(api_key=GOOGLE_API_KEY)
+
 if "messages" not in st.session_state.keys():
     st.session_state.messages = [
         {"role": "assistant", "content": "Ask me a question about Concrete technology"}
@@ -173,59 +187,79 @@ def load_data():
         reader = SimpleDirectoryReader(input_dir="./data", recursive=True)
         docs = reader.load_data()
         
-        # Initialize the embedding model
-        embed_model = GeminiEmbedding(model_name="models/embedding-001", title="this is a document")
-        
-        # Initialize the generative model
-       
-        # Initialize the service context
-        service_context = ServiceContext.from_defaults(llm=Gemini(model="models/gemini-pro-vision"), embed_model=embed_model)
-        
-        index = VectorStoreIndex.from_documents(docs, service_context=service_context)
+        embed_model = GeminiEmbedding(
+            model_name="models/embedding-001", title="this is a document"
+        )
+
+        system_prompt = """<|SYSTEM|># StableLM Tuned (Alpha version)
+- StableLM is a helpful and harmless open-source AI language model developed by StabilityAI.
+- StableLM is excited to be able to help the user, but will refuse to do anything that could be considered harmful to the user.
+- StableLM is more than just an information source, StableLM is also able to write poetry, short stories, and make jokes.
+- StableLM will refuse to participate in anything that could harm a human.
+"""
+
+        # This will wrap the default prompts that are internal to llama-index
+        query_wrapper_prompt = PromptTemplate("<|USER|>{query_str}<|ASSISTANT|>")
+        llm = HuggingFaceLLM(
+            context_window=4096,
+            max_new_tokens=256,
+            generate_kwargs={"temperature": 0.7, "do_sample": False},
+            system_prompt=system_prompt,
+            query_wrapper_prompt=query_wrapper_prompt,
+            tokenizer_name="StabilityAI/stablelm-tuned-alpha-3b",
+            model_name="StabilityAI/stablelm-tuned-alpha-3b",
+            device_map="auto",
+            stopping_ids=[50278, 50279, 50277, 1, 0],
+            tokenizer_kwargs={"max_length": 4096},
+        )
+
+        # Set the embedding model in the Settings
+        Settings.embed_model = embed_model
+
+        # Initialize the vector store index with the embedding model
+        index = VectorStoreIndex.from_documents(docs)
+
         return index
+
+        # llm = HuggingFaceLLM(
+        #     context_window=4096,
+        #     max_new_tokens=256,
+        #     generate_kwargs={"temperature": 0.7, "do_sample": False},
+        #     system_prompt=system_prompt,
+        #     query_wrapper_prompt=query_wrapper_prompt,
+        #     tokenizer_name="StabilityAI/stablelm-tuned-alpha-3b",
+        #     model_name="StabilityAI/stablelm-tuned-alpha-3b",
+        #     device_map="auto",
+        #     stopping_ids=[50278, 50279, 50277, 1, 0],
+        #     tokenizer_kwargs={"max_length": 4096},
+        #     # uncomment this if using CUDA to reduce memory usage
+        #     # model_kwargs={"torch_dtype": torch.float16}
+        # )
+        
+        # Settings.llm = llm
+        # Settings.chunk_size = 1024
+        # index = VectorStoreIndex.from_documents(docs)
+
+        # service_context = ServiceContext.from_defaults(llm=llm, embed_model=embed_model)
+        # index = VectorStoreIndex.from_documents(docs, service_context=service_context)
+        
+        
 
 index = load_data()
 
-# Initialize the chat engine
 if "chat_engine" not in st.session_state.keys():
     st.session_state.chat_engine = index.as_chat_engine(chat_mode="condense_question", verbose=True)
 
-# File uploader for images
-uploaded_file = st.file_uploader("Upload a photo", type=["jpg", "jpeg", "png"])
-
-if uploaded_file is not None:
-    # Process the uploaded file
-    image = Image.open(uploaded_file)
-    st.image(image, caption="Uploaded Image", use_column_width=True)
-    
-    # Convert image to numpy array
-    image_array = np.array(image)
-    
-    # Optionally, preprocess the image if needed (resize, normalize, etc.)
-    # For example, you might resize the image:
-    # image_array = np.array(image.resize((224, 224)))  # Example size
-    
-    # Send the image data to the model
-    # Assuming the model can process numpy arrays
-    response = genai.process_image(image_array)  # Placeholder for the actual model processing method
-    
-    # Display the model's response
-    st.write("Model Response:", response)
-
-# Prompt for user input and save to chat history
 if prompt := st.chat_input("Your question"):
     st.session_state.messages.append({"role": "user", "content": prompt})
 
-# Display the prior chat messages
 for message in st.session_state.messages:
     with st.chat_message(message["role"]):
         st.write(message["content"])
 
-# Generate a new response if the last message is not from assistant
 if st.session_state.messages[-1]["role"] != "assistant":
     with st.chat_message("assistant"):
         with st.spinner("Thinking..."):
-            response = st.session_state.chat_engine.chat(prompt)
+            response = st.session_state.chat_engine.chat(st.session_state.messages[-1]["content"])
             st.write(response.response)
-            message = {"role": "assistant", "content": response.response}
-            st.session_state.messages.append(message)  # Add response to message history
+            st.session_state.messages.append({"role": "assistant", "content": response.response})
