@@ -46,15 +46,15 @@ col1, col2 = st.columns([1, 3])
 #     st.image('scg_logo.jpg', width=100)
 
 # # # Display the text in the second column
-# with col2:
-#     st.subheader("Hello! There, How can I help you Today-  :)")
+with col2:
+    st.subheader("Hello! There, How can I help you Today-  :)")
        
     
-#     st.caption(":violet[what a] :orange[good day] :violet[to share what SCG is offering right now!]")
+    st.caption(":violet[what a] :orange[good day] :violet[to share what SCG is offering right now!]")
     
     
-#     st.set_page_config(page_title="Chat with the Streamlit docs, powered by LlamaIndex", page_icon="🦙", layout="centered", initial_sidebar_state="auto", menu_items=None)
-#     st.title("KMUTT & SCG Chatbot")
+    st.set_page_config(page_title="Chat with the Streamlit docs, powered by LlamaIndex", page_icon="🦙", layout="centered", initial_sidebar_state="auto", menu_items=None)
+    st.title("KMUTT & SCG Chatbot")
 
 
 
