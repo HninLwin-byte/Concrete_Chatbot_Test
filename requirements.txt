@@ -6,4 +6,9 @@ openai
 python-dotenv
 google-generativeai
 streamlit_extras
-PyPDF2 
+PyPDF2
+langchain
+llama-index-llms-huggingface
+transformers
+torch 
+accelerate
