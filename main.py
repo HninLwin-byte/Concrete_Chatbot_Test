@@ -39,7 +39,7 @@ with col1:
 
 
 
-col1, col2 = st.columns([1, 3])
+# col1, col2 = st.columns([1, 3])
 
 # # # Display the logo in the first column
 # with col1:
