@@ -123,6 +123,7 @@
 #             message = {"role": "assistant", "content": response.response}
 #             st.session_state.messages.append(message) # Add response to message history
 
+
 import streamlit as st
 import openai
 from llama_index.llms.openai import OpenAI
@@ -191,7 +192,7 @@ def load_data():
             model_name="models/embedding-001", title="this is a document"
         )
 
-        system_prompt = """<|SYSTEM|># StableLM Tuned (Alpha version)
+        system_prompt = """# StableLM Tuned (Alpha version)
 - StableLM is a helpful and harmless open-source AI language model developed by StabilityAI.
 - StableLM is excited to be able to help the user, but will refuse to do anything that could be considered harmful to the user.
 - StableLM is more than just an information source, StableLM is also able to write poetry, short stories, and make jokes.
@@ -199,7 +200,7 @@ def load_data():
 """
 
         # This will wrap the default prompts that are internal to llama-index
-        query_wrapper_prompt = PromptTemplate("<|USER|>{query_str}<|ASSISTANT|>")
+        query_wrapper_prompt = PromptTemplate("{query_str}")
         llm = HuggingFaceLLM(
             context_window=4096,
             max_new_tokens=256,
@@ -213,37 +214,14 @@ def load_data():
             tokenizer_kwargs={"max_length": 4096},
         )
 
-        # Set the embedding model in the Settings
+        # Set the embedding model and LLM in the Settings
         Settings.embed_model = embed_model
+        Settings.llm = llm
 
         # Initialize the vector store index with the embedding model
         index = VectorStoreIndex.from_documents(docs)
 
         return index
-
-        # llm = HuggingFaceLLM(
-        #     context_window=4096,
-        #     max_new_tokens=256,
-        #     generate_kwargs={"temperature": 0.7, "do_sample": False},
-        #     system_prompt=system_prompt,
-        #     query_wrapper_prompt=query_wrapper_prompt,
-        #     tokenizer_name="StabilityAI/stablelm-tuned-alpha-3b",
-        #     model_name="StabilityAI/stablelm-tuned-alpha-3b",
-        #     device_map="auto",
-        #     stopping_ids=[50278, 50279, 50277, 1, 0],
-        #     tokenizer_kwargs={"max_length": 4096},
-        #     # uncomment this if using CUDA to reduce memory usage
-        #     # model_kwargs={"torch_dtype": torch.float16}
-        # )
-        
-        # Settings.llm = llm
-        # Settings.chunk_size = 1024
-        # index = VectorStoreIndex.from_documents(docs)
-
-        # service_context = ServiceContext.from_defaults(llm=llm, embed_model=embed_model)
-        # index = VectorStoreIndex.from_documents(docs, service_context=service_context)
-        
-        
 
 index = load_data()
 
@@ -263,3 +241,4 @@ if st.session_state.messages[-1]["role"] != "assistant":
             response = st.session_state.chat_engine.chat(st.session_state.messages[-1]["content"])
             st.write(response.response)
             st.session_state.messages.append({"role": "assistant", "content": response.response})
+
