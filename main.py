@@ -93,13 +93,6 @@ for message in st.session_state.messages: # Display the prior chat messages
     with st.chat_message(message["role"]):
         st.write(message["content"])
 
-# # for message in st.session_state.messages:
-# #     with st.container():
-# #         if message["role"] == "assistant":
-# #             st.image('scg_logo.jpg', width=30)
-# #             st.write("ChatBot:", message["content"])
-# #         else:
-# #             st.write("You:", message["content"])
 
 # # If last message is not from assistant, generate a new response
 if st.session_state.messages[-1]["role"] != "assistant":
